@@ -3,9 +3,10 @@ using DocuFlow.Application;
 using DocuFlow.Infrastructure;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,10 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
+
+// Data Protection - store keys locally to avoid DPAPI warnings
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath, "DataProtection-Keys")));
 
 // Swagger / Scalar
 builder.Services.AddOpenApi();
