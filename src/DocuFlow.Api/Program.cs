@@ -1,6 +1,7 @@
 using DocuFlow.Api.Middleware;
 using DocuFlow.Application;
 using DocuFlow.Infrastructure;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -61,6 +62,12 @@ app.UseMiddleware<AuditMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Hangfire Dashboard
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    Authorization = new[] { new Hangfire.Dashboard.LocalRequestsOnlyAuthorizationFilter() }
+});
 
 app.MapControllers();
 
