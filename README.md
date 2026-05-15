@@ -1,20 +1,12 @@
 # DocuFlow
 
-> Multi-tenant document processing SaaS — upload documents, extract structured data with AI.
-
-## Overview
-
-DocuFlow is a full-stack multi-tenant SaaS application that allows organisations to upload documents (invoices, contracts, PDFs) and automatically extract structured data using AI. Each tenant's data is fully isolated at the database level. Documents are processed asynchronously in the background, moving from upload through to AI extraction without any manual steps.
-
----
+A multi-tenant document processing app built with .NET 10 and React. Upload a PDF or invoice, and the system extracts structured data from it using AI — automatically, in the background, with each tenant's data kept completely separate.
 
 ## Architecture
 
-DocuFlow follows Clean Architecture with four layers. The **Domain** layer sits at the core and contains all entities, enums, and domain events with zero external dependencies. The **Application** layer wraps the domain with CQRS handlers (MediatR), repository interfaces, and DTOs — it defines what the system can do without knowing how. The **Infrastructure** layer implements those interfaces: EF Core repositories talking to PostgreSQL, Hangfire for background jobs, Cloudflare R2 for file storage, Groq API for AI extraction, and MailKit for email. The **API** layer is the thin ASP.NET Core entry point — controllers, JWT authentication middleware, and dependency injection wiring.
+Built on Clean Architecture with four layers. The **Domain** layer has no external dependencies — just entities, enums, and domain events. The **Application** layer sits on top and handles all the business logic through CQRS handlers (MediatR) and repository interfaces, with no knowledge of how things are actually implemented. The **Infrastructure** layer is where that implementation lives: EF Core + PostgreSQL, Hangfire for background jobs, Cloudflare R2 for file storage, Groq for AI, and MailKit for email. The **API** layer is just the entry point — ASP.NET Core controllers, JWT middleware, and DI wiring.
 
-When a document is uploaded, the API creates a `Document` entity and an `ExtractionJob`, stores the file in R2, and queues a Hangfire background job. The job moves the document through `Uploaded → Queued → Processing → Completed`, calling PdfPig to extract raw text and then the Groq API to extract structured fields based on a configurable schema. Confidence scores are persisted alongside each field, and a webhook notification is dispatched on completion or failure.
-
----
+When a document gets uploaded, the API creates a `Document` and an `ExtractionJob`, stores the file in R2, and hands off to a Hangfire job. That job walks the document through `Uploaded → Queued → Processing → Completed`, using PdfPig to pull out the raw text and then Groq to extract structured fields against a configurable schema. Confidence scores are saved alongside each field, and a webhook fires when it's done (or if it fails).
 
 ## Tech Stack
 
@@ -24,7 +16,7 @@ When a document is uploaded, the API creates a `Document` entity and an `Extract
 - Clean Architecture + CQRS + MediatR
 - Entity Framework Core + PostgreSQL
 - Hangfire (background jobs)
-- JWT authentication + multi-tenancy via EF Core global query filters
+- JWT auth + multi-tenancy via EF Core global query filters
 
 **Frontend**
 
@@ -42,37 +34,26 @@ When a document is uploaded, the API creates a `Document` entity and an `Extract
 **Testing**
 
 - xUnit + WebApplicationFactory integration tests
-- Unique in-memory DB per test instance for isolation
-
----
+- Unique in-memory DB per test instance to avoid state bleed
 
 ## Running Locally
 
-### Prerequisites
-
-- .NET 10 SDK
-- Node.js 18+
-- PostgreSQL
-- Docker (optional)
-
-### Backend
+**Prerequisites:** .NET 10 SDK, Node.js 18+, PostgreSQL
 
 ```bash
+# Backend
 cd src/DocuFlow.Api
 dotnet run
-```
 
-### Frontend
-
-```bash
+# Frontend
 cd src/DocuFlow.Web
 npm install
 npm run dev
 ```
 
-### Environment Variables
+```
 
-Copy `appsettings.json` and fill in the following:
+Copy `appsettings.json` and fill in:
 
 | Key                                    | Description                                     |
 | -------------------------------------- | ----------------------------------------------- |
@@ -88,8 +69,9 @@ Copy `appsettings.json` and fill in the following:
 | `Email__Password`                      | SMTP password                                   |
 | `Cors__AllowedOrigins`                 | Frontend URL (e.g. https://docuflow.vercel.app) |
 
----
-
 ## Author
 
-**Arvind Chauhan** — Software Developer, NZ
+Arvind Chauhan — Software Developer, NZ
+
+
+```
