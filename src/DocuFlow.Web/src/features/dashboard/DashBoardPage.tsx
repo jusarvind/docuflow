@@ -41,6 +41,7 @@ const DashboardPage = () => {
   const total = statsData?.total ?? 0;
   const completed = statsData?.completed ?? 0;
   const failed = statsData?.failed ?? 0;
+
   return (
     <div className="space-y-8">
       {/* Welcome */}
@@ -54,7 +55,7 @@ const DashboardPage = () => {
       </div>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white rounded-xl border border-gray-200 p-5 border-l-4 border-l-blue-500">
           <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">
             Total Documents
@@ -115,9 +116,9 @@ const DashboardPage = () => {
               <Link
                 key={doc.id}
                 to={`/documents/${doc.id}`}
-                className="flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors"
+                className="flex items-center justify-between px-4 sm:px-6 py-4 hover:bg-slate-50 transition-colors"
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 min-w-0">
                   <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
                     <svg
                       className="w-4 h-4 text-blue-500"
@@ -133,8 +134,8 @@ const DashboardPage = () => {
                       />
                     </svg>
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">
                       {doc.fileName}
                     </p>
                     <p className="text-xs text-gray-600 mt-0.5">
@@ -143,7 +144,7 @@ const DashboardPage = () => {
                   </div>
                 </div>
                 <span
-                  className={`text-xs font-medium px-2.5 py-1 rounded-full ${statusColor(doc.status)}`}
+                  className={`text-xs font-medium px-2.5 py-1 rounded-full flex-shrink-0 ml-3 ${statusColor(doc.status)}`}
                 >
                   {doc.status}
                 </span>

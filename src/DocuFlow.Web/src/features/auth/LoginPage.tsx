@@ -43,7 +43,7 @@ const LoginPage = () => {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center px-8"
+      className="min-h-screen flex items-center justify-center px-4 sm:px-8"
       style={{
         backgroundColor: "#f8fafc",
         backgroundImage: `radial-gradient(circle, #cbd5e1 1px, transparent 1px)`,
@@ -54,8 +54,10 @@ const LoginPage = () => {
         {/* Left — branding */}
         <div className="hidden lg:flex flex-col gap-8 flex-1">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-blue-600 rounded-md" />
-            <span className="text-xl font-bold text-gray-900">DocuFlow</span>
+            <div className="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center">
+              <span className="text-xs font-bold text-white">D</span>
+            </div>
+            <span className="text-lg font-bold text-gray-900">DocuFlow</span>
           </div>
 
           <div>
@@ -104,9 +106,11 @@ const LoginPage = () => {
         </div>
 
         {/* Right — form card */}
-        <div className="w-full lg:w-auto lg:min-w-[400px] bg-white rounded-2xl border border-gray-200 shadow-sm p-8">
-          <div className="lg:hidden flex items-center gap-2 mb-8">
-            <div className="w-6 h-6 bg-blue-600 rounded-md" />
+        <div className="w-full lg:w-auto lg:min-w-[400px] bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sm:p-8">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center">
+              <span className="text-xs font-bold text-white">D</span>
+            </div>
             <span className="text-lg font-bold text-gray-900">DocuFlow</span>
           </div>
 

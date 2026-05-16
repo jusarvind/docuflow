@@ -75,7 +75,7 @@ const AboutPage = () => {
   return (
     <div className="space-y-6">
       {/* Hero card */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
+      <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
         <div className="flex items-center gap-3 mb-4">
           <h2 className="text-sm font-semibold text-gray-900">
             What is DocuFlow?
@@ -93,7 +93,7 @@ const AboutPage = () => {
       </div>
 
       {/* Architecture */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
+      <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
         <h2 className="text-sm font-semibold text-gray-900 mb-3">
           Architecture
         </h2>
@@ -112,7 +112,7 @@ const AboutPage = () => {
       </div>
 
       {/* Document processing flow */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
+      <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
         <h2 className="text-sm font-semibold text-gray-900 mb-3">
           Document processing flow
         </h2>
@@ -134,9 +134,9 @@ const AboutPage = () => {
       </div>
 
       {/* Tech Stack */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
+      <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
         <h2 className="text-sm font-semibold text-gray-900 mb-4">Tech Stack</h2>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {stack.map((section) => (
             <div
               key={section.label}
@@ -162,7 +162,7 @@ const AboutPage = () => {
       </div>
 
       {/* Engineering Challenges */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
+      <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
         <h2 className="text-sm font-semibold text-gray-900 mb-4">
           Key engineering challenges
         </h2>
@@ -186,9 +186,9 @@ const AboutPage = () => {
       </div>
 
       {/* Built by */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
+      <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
         <h2 className="text-sm font-semibold text-gray-900 mb-4">Built by</h2>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center flex-shrink-0">
               <span className="text-sm font-bold text-white">AC</span>

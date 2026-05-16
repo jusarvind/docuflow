@@ -24,7 +24,6 @@ const confidenceColor = (score: number) => {
 const DocumentDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-
   const queryClient = useQueryClient();
 
   const {
@@ -101,9 +100,11 @@ const DocumentDetailPage = () => {
         </svg>
         Back
       </button>
+
       {/* Document Info */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <div className="flex items-start justify-between">
+      <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
+        {/* Header — stacks on mobile */}
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
               <svg
@@ -120,8 +121,8 @@ const DocumentDetailPage = () => {
                 />
               </svg>
             </div>
-            <div>
-              <h1 className="text-xl font-semibold text-gray-900">
+            <div className="min-w-0">
+              <h1 className="text-lg sm:text-xl font-semibold text-gray-900 break-words">
                 {doc.fileName}
               </h1>
               <p className="text-sm text-gray-600 mt-0.5">
@@ -130,13 +131,14 @@ const DocumentDetailPage = () => {
             </div>
           </div>
           <span
-            className={`text-xs font-medium px-2.5 py-1 rounded-full ${statusColor(doc.status)}`}
+            className={`self-start sm:self-auto text-xs font-medium px-2.5 py-1 rounded-full flex-shrink-0 ${statusColor(doc.status)}`}
           >
             {doc.status}
           </span>
         </div>
 
-        <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-100">
+        {/* Metadata — 1 col on mobile, 3 on desktop */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-100">
           <div>
             <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">
               Schema
@@ -172,7 +174,7 @@ const DocumentDetailPage = () => {
 
       {/* Extracted Fields */}
       <div className="bg-white rounded-xl border border-gray-200">
-        <div className="px-6 py-4 border-b border-gray-100">
+        <div className="px-4 sm:px-6 py-4 border-b border-gray-100">
           <h2 className="text-sm font-semibold text-gray-900">
             Extracted Fields
           </h2>
@@ -202,43 +204,71 @@ const DocumentDetailPage = () => {
             No fields extracted.
           </div>
         ) : (
-          <table className="w-full">
-            <thead>
-              <tr className="text-xs text-gray-500 uppercase tracking-wide border-b border-gray-100">
-                <th className="text-left px-6 py-3 font-medium">Field</th>
-                <th className="text-left px-6 py-3 font-medium">Value</th>
-                <th className="text-left px-6 py-3 font-medium">Confidence</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
+          <>
+            {/* Mobile cards */}
+            <div className="sm:hidden divide-y divide-gray-100">
               {fields.map((field) => (
-                <tr
-                  key={field.id}
-                  className="hover:bg-slate-50 transition-colors"
-                >
-                  <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                    {field.fieldName}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-700">
-                    {field.fieldValue}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
-                      <div className="flex-1 bg-gray-100 rounded-full h-2 max-w-24">
-                        <div
-                          className={`h-2 rounded-full ${confidenceColor(field.confidenceScore)}`}
-                          style={{ width: `${field.confidenceScore * 100}%` }}
-                        />
-                      </div>
-                      <span className="text-xs font-medium text-gray-700">
-                        {(field.confidenceScore * 100).toFixed(0)}%
-                      </span>
-                    </div>
-                  </td>
-                </tr>
+                <div key={field.id} className="px-4 py-4 space-y-2">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-medium text-gray-900">
+                      {field.fieldName}
+                    </p>
+                    <span className="text-xs font-medium text-gray-600">
+                      {(field.confidenceScore * 100).toFixed(0)}%
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-700">{field.fieldValue}</p>
+                  <div className="w-full bg-gray-100 rounded-full h-1.5">
+                    <div
+                      className={`h-1.5 rounded-full ${confidenceColor(field.confidenceScore)}`}
+                      style={{ width: `${field.confidenceScore * 100}%` }}
+                    />
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+
+            {/* Desktop table */}
+            <table className="hidden sm:table w-full">
+              <thead>
+                <tr className="text-xs text-gray-500 uppercase tracking-wide border-b border-gray-100">
+                  <th className="text-left px-6 py-3 font-medium">Field</th>
+                  <th className="text-left px-6 py-3 font-medium">Value</th>
+                  <th className="text-left px-6 py-3 font-medium">
+                    Confidence
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {fields.map((field) => (
+                  <tr
+                    key={field.id}
+                    className="hover:bg-slate-50 transition-colors"
+                  >
+                    <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                      {field.fieldName}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-700">
+                      {field.fieldValue}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 bg-gray-100 rounded-full h-2 max-w-24">
+                          <div
+                            className={`h-2 rounded-full ${confidenceColor(field.confidenceScore)}`}
+                            style={{ width: `${field.confidenceScore * 100}%` }}
+                          />
+                        </div>
+                        <span className="text-xs font-medium text-gray-700">
+                          {(field.confidenceScore * 100).toFixed(0)}%
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
         )}
       </div>
     </div>
