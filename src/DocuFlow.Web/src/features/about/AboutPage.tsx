@@ -2,8 +2,6 @@ const AboutPage = () => {
   const stack = [
     {
       label: "Backend",
-      color: "bg-blue-50 text-blue-600 border-blue-100",
-      dot: "bg-blue-500",
       items: [
         ".NET 10",
         "Clean Architecture",
@@ -15,8 +13,6 @@ const AboutPage = () => {
     },
     {
       label: "Frontend",
-      color: "bg-violet-50 text-violet-600 border-violet-100",
-      dot: "bg-violet-500",
       items: [
         "React 18",
         "TypeScript",
@@ -28,11 +24,9 @@ const AboutPage = () => {
     },
     {
       label: "AI & Processing",
-      color: "bg-emerald-50 text-emerald-600 border-emerald-100",
-      dot: "bg-emerald-500",
       items: [
         "Groq API",
-        "PdfPig (PDF extraction)",
+        "PdfPig",
         "Background job pipeline",
         "Multi-step status tracking",
         "Webhook notifications",
@@ -40,8 +34,6 @@ const AboutPage = () => {
     },
     {
       label: "Auth & Testing",
-      color: "bg-amber-50 text-amber-600 border-amber-100",
-      dot: "bg-amber-500",
       items: [
         "JWT authentication",
         "Multi-tenancy (EF Core filters)",
@@ -71,7 +63,7 @@ const AboutPage = () => {
     {
       title: "AI extraction with confidence scoring",
       description:
-        "Groq API extracts structured fields from documents based on a configurable schema. PdfPig handles PDF text extraction before passing content to the model. Confidence scores are returned and persisted alongside each extracted field, with webhook notifications dispatched on completion or failure.",
+        "Groq API extracts structured fields from documents based on a configurable schema. PdfPig handles text extraction before passing content to the model. Confidence scores are returned and persisted alongside each extracted field, with webhook notifications dispatched on completion or failure.",
     },
     {
       title: "Integration test isolation",
@@ -82,45 +74,63 @@ const AboutPage = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-gray-900">About</h1>
-        <p className="text-gray-600 text-sm mt-1">
-          What DocuFlow is and how it was built
-        </p>
-      </div>
-
       {/* Hero card */}
       <div className="bg-white rounded-xl border border-gray-200 p-6">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
-            <svg
-              className="w-5 h-5 text-blue-500"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-          </div>
           <h2 className="text-sm font-semibold text-gray-900">
             What is DocuFlow?
           </h2>
         </div>
-        <p className="text-sm text-gray-700 leading-relaxed">
+        <p className="text-sm text-gray-700 leading-relaxed text-justify">
           DocuFlow is a multi-tenant document processing SaaS built on .NET 10
-          and React. Users upload invoices, PDFs, and spreadsheets, and the
-          system automatically extracts structured data using AI. Every tenant's
-          data is isolated at the database level. Documents are processed in the
-          background via Hangfire, moving from upload through to extraction
-          without any manual steps. The project is full stack end to end,
-          covering Clean Architecture, CQRS, JWT auth, a React frontend, AI
-          integration, webhook notifications, and integration tests.
+          and React. You upload an invoice, a contract, or a spreadsheet and the
+          system handles the rest. It extracts structured data using AI entirely
+          in the background, with each tenant's data kept completely separate at
+          the database level. The project covers the full stack: Clean
+          Architecture, CQRS, JWT auth, a React frontend, AI integration,
+          webhook notifications, and integration tests.
         </p>
+      </div>
+
+      {/* Architecture */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <h2 className="text-sm font-semibold text-gray-900 mb-3">
+          Architecture
+        </h2>
+        <p className="text-sm text-gray-700 leading-relaxed text-justify mb-5">
+          The backend follows Clean Architecture with four layers. Domain sits
+          at the core with no external dependencies, just entities, enums, and
+          domain events. Application wraps it with CQRS handlers via MediatR and
+          repository interfaces, defining what the system does without caring
+          about how it is implemented. Infrastructure is where everything is
+          wired up: EF Core repositories talking to PostgreSQL, Hangfire for
+          background jobs, Cloudflare R2 for file storage, Groq for AI
+          extraction, and MailKit for email. The API layer is the thin entry
+          point handling controllers, JWT middleware, tenant resolution, and DI
+          wiring.
+        </p>
+      </div>
+
+      {/* Document processing flow */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <h2 className="text-sm font-semibold text-gray-900 mb-3">
+          Document processing flow
+        </h2>
+        <p className="text-sm text-gray-700 leading-relaxed text-justify mb-5">
+          When a file is uploaded the API stores it in Cloudflare R2 and creates
+          an ExtractionJob in PostgreSQL. Hangfire picks up the job and walks
+          the document through each status stage. Text is extracted based on the
+          file type using PdfPig for PDFs, a plain reader for TXT and CSV, and
+          EPPlus for Excel. The extracted text is then passed to Groq along with
+          the tenant's configured schema. Fields and confidence scores are
+          persisted once extraction is complete, and a webhook fires to notify
+          the tenant on success or failure.
+        </p>
+        <img
+          src="public\docuflow_pipeline.svg"
+          alt="DocuFlow document processing pipeline"
+          className="w-full max-w-lg mx-auto block rounded-lg border border-gray-100"
+        />
       </div>
 
       {/* Tech Stack */}
@@ -132,9 +142,7 @@ const AboutPage = () => {
               key={section.label}
               className="rounded-lg border border-gray-100 bg-slate-50 p-4"
             >
-              <span
-                className={`inline-block text-xs font-semibold px-2 py-0.5 rounded-md border mb-3 ${section.color}`}
-              >
+              <span className="inline-block text-xs font-semibold px-2 py-0.5 rounded-md border mb-3 bg-gray-100 text-gray-600 border-gray-200">
                 {section.label}
               </span>
               <ul className="space-y-1.5">
@@ -143,9 +151,7 @@ const AboutPage = () => {
                     key={item}
                     className="text-sm text-gray-700 flex items-center gap-2"
                   >
-                    <div
-                      className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${section.dot}`}
-                    />
+                    <div className="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-gray-400" />
                     {item}
                   </li>
                 ))}
@@ -158,19 +164,19 @@ const AboutPage = () => {
       {/* Engineering Challenges */}
       <div className="bg-white rounded-xl border border-gray-200 p-6">
         <h2 className="text-sm font-semibold text-gray-900 mb-4">
-          Key Engineering Challenges
+          Key engineering challenges
         </h2>
         <div className="space-y-0 divide-y divide-gray-100">
           {challenges.map((c, i) => (
             <div key={c.title} className="py-4 first:pt-0 last:pb-0 flex gap-4">
-              <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center mt-0.5">
-                <span className="text-xs font-semibold text-blue-500">
+              <div className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center mt-0.5">
+                <span className="text-xs font-semibold text-gray-500">
                   {i + 1}
                 </span>
               </div>
               <div>
                 <p className="text-sm font-semibold text-gray-900">{c.title}</p>
-                <p className="text-sm text-gray-600 mt-1 leading-relaxed">
+                <p className="text-sm text-gray-600 mt-1 leading-relaxed text-justify">
                   {c.description}
                 </p>
               </div>
